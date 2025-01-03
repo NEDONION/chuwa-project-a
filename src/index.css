@@ -1,3 +1,11 @@
+:root{
+  /* background-color: #F9FAFB; */
+  /* border: 1px dodgerblue solid; */
+  padding: 0px;
+  margin: 0 auto;
+  height: 100%;
+  
+}
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
