@@ -1,0 +1,111 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111827; /* Dark blue background */
+  padding: 8px 64px; /* Padding for spacing */
+  color: white; /* White text */
+  height: 64px; /* Fixed height */
+}
+
+/* Left section for the title */
+.header-left h1 {
+  font-size: 24px; /* Large font for the main title */
+  margin: 0;
+}
+
+.header-left span {
+  font-size: 14px; /* Smaller font for the subtitle */
+  color: gray;
+}
+
+/* Middle section for the search bar */
+.header-middle {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  max-width: 600px; /* Limit max width */
+  margin: 0 auto; /* Center align */
+}
+
+.search-bar {
+  flex-grow: 1; /* Take up remaining space */
+  padding: 12px; /* Padding inside the input */
+  font-size: 16px; /* Adjust font size */
+  border-radius: 5px 0 0 5px; /* Rounded corners for the left side */
+  border: none; /* Remove border */
+  outline: none; /* Remove outline on focus */
+  height: 48px; /* Ensure height matches the button */
+  box-sizing: border-box; /* Include padding in the height */
+}
+
+.search-button {
+  width: 48px; /* Fixed width for the button */
+  height: 48px; /* Match the height of the search bar */
+  border-radius: 0 5px 5px 0; /* Rounded corners on the right */
+  border: none; /* Remove border */
+  background-color: white; /* Button background */
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Vertically center icon */
+  justify-content: center; /* Horizontally center icon */
+  box-sizing: border-box; /* Ensure padding doesn't affect size */
+}
+
+/* Adjust the icon inside the button */
+.search-button img {
+  width: 20px; /* Adjust the icon size */
+  height: 20px;
+  object-fit: contain; /* Ensure the proportions are maintained */
+}
+
+/* Right section for user and cart */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* Spacing between items */
+}
+
+.user,
+.cart {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing between icon and text */
+}
+
+.icon {
+  width: 24px; /* Icon width */
+  height: 24px; /* Icon height */
+  object-fit: contain; /* Keep original proportions */
+}
+
+.user span,
+.cart span {
+  font-size: 16px; /* Text size */
+  vertical-align: middle; /* Align text with icons */
+}
+
+@media (max-width: 480px) {
+  .header-left h1 {
+    font-size: 18px; /* Reduce font size for small screens */
+  }
+
+  .header-left span {
+    font-size: 12px; /* Reduce subtitle size */
+  }
+
+  .search-bar {
+    font-size: 14px; /* Adjust font size for search bar */
+    padding: 8px; /* Reduce padding */
+  }
+
+  .user span,
+  .cart span {
+    font-size: 14px; /* Reduce text size */
+  }
+
+  .icon {
+    width: 20px; /* Adjust icon size */
+    height: 20px;
+  }
+}
