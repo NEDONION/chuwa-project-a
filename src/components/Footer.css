@@ -1,0 +1,78 @@
+.footer {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    /* max-width: 1440px;
+    height: 85px; */
+  }
+  
+  .footer-content {
+    max-width: 1440px;
+    height: 85px;
+    top: 1074px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; 
+  }
+  
+  .footer-icons {
+    
+    display: flex; /* Enable Flexbox for icons */
+    justify-content: space-between;
+    align-items: center;
+    /* align-content: space-between; */
+    gap: 15px; 
+  }
+
+  .footer-icon {
+    width: 32px; /* Set icon width to 32px */
+    height: 32px; /* Set icon height to 32px */
+    object-fit: contain; /* Ensure the image scales properly */
+  }
+
+  
+  .footer-links a {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+  /* responsive desing */
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column; /* Stack items vertically on smaller screens */
+      align-items: center;
+      height: auto;
+    }
+  
+    .footer-icons {
+      margin-bottom: 10px; /* Add spacing below icons */
+    }
+  
+    .footer-links {
+      flex-direction: column; /* Stack links vertically */
+      gap: 10px; /* Adjust spacing for vertical layout */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .footer {
+      padding: 10px; /* Reduce padding on very small screens */
+    }
+  
+    .footer-icon {
+      width: 24px; /* Make icons smaller */
+      height: 24px;
+    }
+  
+    .footer-links a {
+      font-size: 14px; /* Reduce link font size */
+    }
+  }
