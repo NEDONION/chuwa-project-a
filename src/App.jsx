@@ -1,22 +1,20 @@
-// import { Route} from "react-router-dom";
+// import { Route } from "react-router-dom";
 import Container from "react-bootstrap/Container";
-import './App.css'
-import Footer from './components/Foot.jsx'
+import './App.css';
+import Header from './components/Header.jsx';
+import Footer from './components/Foot.jsx';
 
 function App() {
-  
-
   return (
     <>
-      {/* <Headers/> */} 
+      <Header /> 
       <div>hello</div>
       <Container>
         {/* <Route path="/home"></Route> */}
       </Container>
-
-      <Footer />
+      <Footer /> 
     </>
-  )
+  );
 }
 
-export default App
+export default App;
