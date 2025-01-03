@@ -4,13 +4,15 @@ import './App.css'
 import Footer from './components/Foot.jsx'
 import SignUp from "./pages/SignUp.jsx";
 import SignIn from "./pages/SignIn.jsx";
+import Header from './components/Header.jsx';
+
+
 
 function App() {
-  
-
   return (
     <>
       <Router>
+        <Header />
         <div>this is header</div>
         <Container>
         <Routes>
@@ -19,12 +21,11 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
         </Routes>
         </Container>
-
         <Footer />
       </Router>
       
     </>
-  )
+  );
 }
 
-export default App
+export default App;
