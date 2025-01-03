@@ -1,20 +1,28 @@
-// import { Route} from "react-router-dom";
+import {  BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import './App.css'
 import Footer from './components/Foot.jsx'
+import SignUp from "./pages/SignUp.jsx";
+import SignIn from "./pages/SignIn.jsx";
 
 function App() {
   
 
   return (
     <>
-      {/* <Headers/> */} 
-      <div>hello</div>
-      <Container>
-        {/* <Route path="/home"></Route> */}
-      </Container>
+      <Router>
+        <div>this is header</div>
+        <Container>
+        <Routes>
+          {/* <Route path = '/'/> */}
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+        </Routes>
+        </Container>
 
-      <Footer />
+        <Footer />
+      </Router>
+      
     </>
   )
 }
