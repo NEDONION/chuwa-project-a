@@ -13,7 +13,6 @@ function App() {
     <>
       <Router>
         <Header />
-        <div>this is header</div>
         <Container>
         <Routes>
           {/* <Route path = '/'/> */}
