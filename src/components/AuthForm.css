@@ -17,10 +17,41 @@ h3 {
     font-weight: 600;
     color: #333;
 }
+.smallText {
+    width: 400px;
+    text-align: center;
+    margin-top: -20px;
+    margin-bottom: 20px;
+
+}
+
+.smallText p {
+    font-size: 12px;
+    color: #555;
+    margin-top: 0;
+    text-align: center;
+}
+
   
 .mb-3 {
     margin-bottom: 15px;
 
+}
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px; /* Aligns the button to the right inside the input */
+    top: 38%; /* Centers the button vertically */
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 0;
 }
 
 label {
@@ -39,12 +70,27 @@ input.form-control {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    transition: border-color 0.3s ease; 
 }
 
 input.form-control:focus {
     border-color: #4d90fe;
     outline: none;
 }
+
+input.error {
+    border: 1px solid #ff0000; /* Red border */
+  }
+  
+  /* Error Text */
+.error-text {
+    font-size: 12px;
+    color: #ff0000; /* Red text color */
+    margin-top: 5px;
+    text-align: right;
+    min-height: 16px;
+}
+
 
 .d-grid {
     display: grid;
@@ -92,7 +138,8 @@ button.btn:hover {
 @media (max-width: 768px) {
     form {
         padding: 15px;
-        max-width: 90%;
+        max-width: 100%;
+        /* margin-left: 10%; */
     }
 
     h3 {
@@ -100,12 +147,18 @@ button.btn:hover {
     }
 
     input.form-control {
-        width: 100%;  /* Take full width on smaller screens */
+        width: 300px;  /* Take full width on smaller screens */
         max-width: 100%;
+        
+    }
+
+
+    .smallText p{
+        font-size: 8px;
     }
 
     button.btn {
-        width: 100%;  /* Make button full width */
+        width: 300px;  /* Make button full width */
         font-size: 14px;
     }
 
@@ -127,13 +180,18 @@ button.btn:hover {
         font-size: 20px;
     }
 
+    .smallText p{
+        font-size: 8px;
+    }
+
     input.form-control {
-        width: 100%;  /* Full width input */
+        width: 200px;  /* Full width input */
         max-width: 100%;
+        
     }
 
     button.btn {
-        width: 100%;  /* Full width button */
+        width: 200px;  /* Full width button */
         padding: 10px;
         font-size: 14px;
     }

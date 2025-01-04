@@ -5,6 +5,7 @@ import Footer from './components/Foot.jsx'
 import SignUp from "./pages/SignUp.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import Header from './components/Header.jsx';
+import UpdatePassword from "./pages/UpdatePassword.jsx";
 
 
 
@@ -15,9 +16,11 @@ function App() {
         <Header />
         <Container>
         <Routes>
-          {/* <Route path = '/'/> */}
+          <Route path="/" element={<SignUp />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
+
         </Routes>
         </Container>
         <Footer />
