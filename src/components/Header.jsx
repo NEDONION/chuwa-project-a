@@ -3,8 +3,16 @@ import './Header.css';
 import Picture1 from '../assets/picture1.png'; // User icon
 import Picture2 from '../assets/picture2.png'; // Cart icon
 import Picture3 from '../assets/picture3.png'; // Search icon
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const Header = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
+  // Handle "Sign In" click to navigate to the sign-in page
+  const handleSignInClick = () => {
+    navigate('/signin'); // Navigate to the Sign In page
+  };
+
   return (
     <header className="header">
       <div className="header-left">
@@ -25,7 +33,8 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        <div className="user">
+        {/* Add the cursor style through CSS */}
+        <div className="user" onClick={handleSignInClick}>
           <img src={Picture1} alt="User Icon" className="icon" />
           <span>Sign In</span>
         </div>
