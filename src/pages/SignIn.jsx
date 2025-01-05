@@ -1,46 +1,49 @@
 import AuthForm from "../components/AuthForm";
-import { baseUrl } from "../utils/service";
 import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
     const navigate = useNavigate();
     const buttonText = "Sign In";
-    
+
     const handleSubmit = async (e, formData) => {
-        e.preventDefault();
-        console.log('submit sign in form')
+        e.preventDefault(); 
 
-        const {email, password} = formData;
+        const { email, password } = formData; 
 
-        const url = baseUrl + '/signin'
+        const url = "http://localhost:5001/api/users/signin"; 
 
-        try{
+        try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({email, password})
+                body: JSON.stringify({ email, password }), 
             });
-            if (response.ok){
-                // Handle successful submission, navigate to another page
-                
 
-            }else{
-                // Handle error response
-                console.error('Error submitting form');
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message); 
+                console.log("Login Token:", result.token);
+
+                localStorage.setItem('authToken', result.token);
+
+                navigate('/dashboard');
+            } else {
+                const error = await response.json();
+                alert(error.message || "Login failed"); 
             }
-        }catch(error){
+        } catch (error) {
             console.error('Error:', error);
-
-        };      
-    }
+            alert("An error occurred. Please try again."); 
+        }
+    };
 
     return (
         <div className="auth-form-container">
-            <AuthForm  buttonText = {buttonText} handleSubmit={handleSubmit}/>
+            <AuthForm buttonText={buttonText} handleSubmit={handleSubmit} />
         </div>
-    )
-}
+    );
+};
 
 export default SignIn;

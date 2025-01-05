@@ -71,6 +71,14 @@
   display: flex;
   align-items: center;
   gap: 8px; /* Spacing between icon and text */
+  cursor: pointer; /* Add pointer cursor for hover */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+/* Add hover effect for .user and .cart */
+.user:hover,
+.cart:hover {
+  color: #007bff; /* Change text color on hover */
 }
 
 .icon {
@@ -85,6 +93,7 @@
   vertical-align: middle; /* Align text with icons */
 }
 
+/* Responsive styles */
 @media (max-width: 480px) {
   .header-left h1 {
     font-size: 18px; /* Reduce font size for small screens */
