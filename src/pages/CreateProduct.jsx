@@ -29,6 +29,7 @@ const CreateProduct = () => {
             onChange={handleProductChange}
             onSubmit={handleSubmit}
             btnLabel='Add Product'
+            title='Create Product'
         />
     )
 }
