@@ -11,6 +11,11 @@ const productReducer = (state = initState, action) => {
         case actionType.ADD_PRODUCT:
             console.log(`[reducer]ADD_PRODUCT`, action.payload);         
             return [...state, action.payload]; // add new product to array
+
+        case actionType.EDIT_PRODUCT:
+            console.log(`[reducer]EDIT_PRODUCT`, action.payload);         
+            return state.map((product) => 
+                product.id === action.payload.id? action.payload : product); // update product in array
         default:
             return state;
     }

@@ -7,6 +7,8 @@ import SignIn from "./pages/SignIn.jsx";
 import Header from './components/Header.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import CreateProduct from "./pages/CreateProduct.jsx";
+import EditProduct from "./pages/EditProduct.jsx";
+import ProductDetail from "./pages/ProductDetail.jsx";
 
 
 
@@ -22,6 +24,8 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/create-product" element={<CreateProduct />} />
+          <Route path="/edit-product/:id" element={<EditProduct />} />
+          <Route path="/detail" element={<ProductDetail />} />
 
         </Routes>
         </Container>

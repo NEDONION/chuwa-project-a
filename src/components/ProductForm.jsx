@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
 import {addProduct} from '../actions/productAction';
 import { Box, TextField, Button, Select, MenuItem, Typography, Grid } from "@mui/material";
-const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
+const ProductForm = ({initVals, onChange, onSubmit, btnLabel, title}) => {
 
     const [product, setProduct] = useState(initVals);
     const [previewImage, setPreviewImage] = useState(null);
@@ -25,20 +25,20 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
     }
 
     return (
+
+      <div>
+        <h2 style={{textAlign: 'left'}}>{title}</h2>
         <Box
           sx={{
             maxWidth: 600,
             margin: "auto",
-            padding: 4,
+            padding: 2,
             boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
             borderRadius: "8px",
             backgroundColor: "#fff",
           }}
         >
-          <Typography variant="h5" align="center" gutterBottom>
-            Create Product
-          </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -47,6 +47,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 value={product.name}
                 onChange={handleChange}
                 variant="outlined"
+                size="small" 
               />
             </Grid>
             <Grid item xs={12}>
@@ -59,6 +60,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 multiline
                 rows={3}
                 variant="outlined"
+                size="small" 
               />
             </Grid>
             <Grid item xs={12}>
@@ -69,6 +71,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 onChange={handleChange}
                 displayEmpty
                 variant="outlined"
+                size="small" 
               >
                 <MenuItem value="" disabled>
                   Select Category
@@ -87,6 +90,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 onChange={handleChange}
                 type="number"
                 variant="outlined"
+                size="small" 
               />
             </Grid>
             <Grid item xs={6}>
@@ -98,6 +102,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 onChange={handleChange}
                 type="number"
                 variant="outlined"
+                size="small" 
               />
             </Grid>
             <Grid item xs={9}>
@@ -108,6 +113,7 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
                 value={product.imageLink}
                 onChange={handleChange}
                 variant="outlined"
+                size="small" 
               />
             </Grid>
             <Grid item xs={3}>
@@ -161,6 +167,9 @@ const ProductForm = ({initVals, onChange, onSubmit, btnLabel}) => {
             </Grid>
           </Grid>
         </Box>
+
+      </div>
+        
       );
 }
 export default ProductForm
