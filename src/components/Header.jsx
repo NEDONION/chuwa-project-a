@@ -3,14 +3,24 @@ import './Header.css';
 import Picture1 from '../assets/picture1.png'; // User icon
 import Picture2 from '../assets/picture2.png'; // Cart icon
 import Picture3 from '../assets/picture3.png'; // Search icon
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate} from 'react-router-dom'; // Import useNavigate for navigation
+import { useSelector, useDispatch } from'react-redux'; 
+import { isSignedIn } from '../actions/authAction';
 
 const Header = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate(); // Hook for navigation
-
+  const signedIn = useSelector((state) => state.auth.signedIn);
   // Handle "Sign In" click to navigate to the sign-in page
   const handleSignInClick = () => {
-    navigate('/signin'); // Navigate to the Sign In page
+    if (!signedIn) {
+      // when not sign in, click "sign in" button, navigate to the Sign In page
+      navigate('/signin'); 
+    } else {
+      // when in sign-in status, click "sign out" button 
+      dispatch(isSignedIn()); // button change to "sign in"
+      localStorage.removeItem('authToken');
+    };
   };
 
   return (
@@ -36,7 +46,7 @@ const Header = () => {
         {/* Add the cursor style through CSS */}
         <div className="user" onClick={handleSignInClick}>
           <img src={Picture1} alt="User Icon" className="icon" />
-          <span>Sign In</span>
+          {signedIn? (<span>Sign Out</span>):(<span>Sign In</span>)}
         </div>
         <div className="cart">
           <img src={Picture2} alt="Cart Icon" className="icon" />

@@ -1,8 +1,13 @@
 import AuthForm from "../components/AuthForm";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { isSignedIn } from "../actions/authAction";
 
 const SignIn = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+   
+
     const buttonText = "Sign In";
 
     const handleSubmit = async (e, formData) => {
@@ -23,12 +28,14 @@ const SignIn = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                alert(result.message); 
+                // alert(result.message); 
                 console.log("Login Token:", result.token);
 
                 localStorage.setItem('authToken', result.token);
 
-                navigate('/dashboard');
+                dispatch(isSignedIn());
+                navigate('/create-product');
+
             } else {
                 const error = await response.json();
                 alert(error.message || "Login failed"); 

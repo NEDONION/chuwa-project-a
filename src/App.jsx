@@ -19,7 +19,7 @@ function App() {
         <Header />
         <Container>
         <Routes>
-          <Route path="/" element={<SignUp />} />
+          <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/update-password" element={<UpdatePassword />} />
