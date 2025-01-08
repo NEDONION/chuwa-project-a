@@ -2,4 +2,5 @@ export const actionType = {
     'ADD_PRODUCT': 'ADD_PRODUCT',
     'FETCH_PRODUCT': 'FETCH_PRODUCT',
     'EDIT_PRODUCT': 'EDIT_PRODUCT',
+    'TOGGLE_SIGN_IN': 'TOGGLE_SIGN_IN',
 }
