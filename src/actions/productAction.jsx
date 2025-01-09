@@ -1,91 +1,86 @@
 import { actionType } from "../helper";
 
+// Fetch all products from the backend
+export const fetchProducts = () => async (dispatch) => {
+  try {
+    const response = await fetch('http://localhost:5001/api/products', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-// Action Creators
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
 
+    const data = await response.json();
 
-export const fetchProduct = () => async (dispatch) => {
-  // Fetch data from API
-  const response = await fetch('fetch-url', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }); 
+    dispatch({
+      type: actionType.FETCH_PRODUCT,
+      payload: data, // Pass fetched products to the reducer
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
+};
 
-  const data = await response.json();
-
-  // Dispatch action to update state
-  dispatch({
-    type: actionType.FETCH_PRODUCT,
-    payload: data,
-  });
-}
-
-export const addProduct = (product) => async (dispatch) =>{
-  console.log(`[action]addProduct`);
-  try{
-    const response = await fetch('create-url', {
+// Add a new product to the backend
+export const addProduct = (product) => async (dispatch) => {
+  try {
+    const response = await fetch('http://localhost:5001/api/products', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(product),
-    })
+      body: JSON.stringify(product), // Send the new product details
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to add product');
     }
+
+    const newProduct = await response.json(); // Get the newly created product from the server
 
     dispatch({
       type: actionType.ADD_PRODUCT,
-      payload: product, // Newly added product
+      payload: newProduct, // Pass new product to the reducer
     });
-  }catch(err){
-    console.error('Error fetching products:', err);
+  } catch (error) {
+    console.error('Error adding product:', error);
   }
-  
-  
 };
 
-// export const addProduct = (product) =>{
-//   console.log('addProduct action!');
-//   return{
-//     type: actionType.ADD_PRODUCT,
-//     payload: product, // Newly added product
-//   };
-// };
-
+// Edit an existing product in the backend
 export const editProduct = (updatedProduct) => async (dispatch) => {
-  console.log(`[action]editProduct`);
-  try{
-    const response = await fetch('edit-api', {
-      method: 'POST',
+  try {
+    const response = await fetch(`http://localhost:5001/api/products/${updatedProduct._id}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedProduct),
-    })
+      body: JSON.stringify(updatedProduct), // Send updated fields
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error('Failed to edit product');
     }
+
+    const updatedData = await response.json();
 
     dispatch({
       type: actionType.EDIT_PRODUCT,
-      payload: updatedProduct, // Newly added product
+      payload: updatedData, // Pass updated product to the reducer
     });
-
-  }catch (err) {
-    console.error('Error editing product:', err);
+  } catch (error) {
+    console.error('Error editing product:', error);
   }
-  
-}
+};
+
 const productActions = {
-  fetchProduct,
+  fetchProducts,
   addProduct,
   editProduct,
 };
 
 export default productActions;
-// export default addProduct;

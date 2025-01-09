@@ -9,8 +9,7 @@ import UpdatePassword from "./pages/UpdatePassword.jsx";
 import CreateProduct from "./pages/CreateProduct.jsx";
 import EditProduct from "./pages/EditProduct.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
-
-
+import ProductList from "./pages/ProductList.jsx";
 
 function App() {
   return (
@@ -19,7 +18,7 @@ function App() {
         <Header />
         <Container>
         <Routes>
-          <Route path="/" element={<SignIn />} />
+          <Route path="/" element={<ProductList />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/update-password" element={<UpdatePassword />} />
