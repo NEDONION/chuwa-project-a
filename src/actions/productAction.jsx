@@ -1,5 +1,7 @@
 import { actionType } from "../helper";
 
+
+// Action Creators
 // Fetch all products from the backend
 export const fetchProducts = () => async (dispatch) => {
   try {
@@ -16,6 +18,7 @@ export const fetchProducts = () => async (dispatch) => {
 
     const data = await response.json();
 
+
     dispatch({
       type: actionType.FETCH_PRODUCT,
       payload: data, // Pass fetched products to the reducer
@@ -30,9 +33,11 @@ export const addProduct = (product) => async (dispatch) => {
   try {
     const response = await fetch('http://localhost:5001/api/products', {
       method: 'POST',
+
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
+
       body: JSON.stringify(product), // Send the new product details
     });
 
@@ -46,6 +51,7 @@ export const addProduct = (product) => async (dispatch) => {
       type: actionType.ADD_PRODUCT,
       payload: newProduct, // Pass new product to the reducer
     });
+
   } catch (error) {
     console.error('Error adding product:', error);
   }
@@ -53,12 +59,15 @@ export const addProduct = (product) => async (dispatch) => {
 
 // Edit an existing product in the backend
 export const editProduct = (updatedProduct) => async (dispatch) => {
+
+  console.log(`[action]editProduct`);
   try {
     const response = await fetch(`http://localhost:5001/api/products/${updatedProduct._id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
+
       body: JSON.stringify(updatedProduct), // Send updated fields
     });
 
@@ -72,6 +81,7 @@ export const editProduct = (updatedProduct) => async (dispatch) => {
       type: actionType.EDIT_PRODUCT,
       payload: updatedData, // Pass updated product to the reducer
     });
+
   } catch (error) {
     console.error('Error editing product:', error);
   }

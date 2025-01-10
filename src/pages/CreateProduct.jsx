@@ -1,12 +1,15 @@
+
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../actions/productAction';
 import ProductForm from '../components/ProductForm';
 
+
 const CreateProduct = () => {
   const dispatch = useDispatch();
 
   const [product, setProduct] = useState({
+
     name: '',
     description: '',
     category: '',
@@ -16,9 +19,11 @@ const CreateProduct = () => {
   });
 
   // Update product state whenever form changes
+
   const handleProductChange = (updatedProduct) => {
     setProduct(updatedProduct);
   };
+
 
   // Dispatch action to add a new product
   const handleSubmit = () => {
