@@ -82,8 +82,8 @@
 }
 
 .icon {
-  width: 24px; /* Icon width */
-  height: 24px; /* Icon height */
+  width: 30px; /* Icon width */
+  height: 30px; /* Icon height */
   object-fit: contain; /* Keep original proportions */
 }
 
