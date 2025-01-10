@@ -1,26 +1,35 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct } from "../actions/productAction";
-import ProductForm from "../components/ProductForm";
+
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../actions/productAction';
+import ProductForm from '../components/ProductForm';
+
 
 const CreateProduct = () => {
   const dispatch = useDispatch();
 
   const [product, setProduct] = useState({
-    name: "",
-    description: "",
-    category: "",
-    price: "",
-    quantity: "",
-    imageLink: "",
+
+    name: '',
+    description: '',
+    category: '',
+    price: '',
+    quantity: '', // Quantity to match backend field
+    imageLink: '', // Image link to match backend field
   });
 
-  // Update the product state when changes are made in the form
+  // Update product state whenever form changes
+
   const handleProductChange = (updatedProduct) => {
     setProduct(updatedProduct);
   };
 
-  const handleSubmit = () => dispatch(addProduct(product));
+
+  // Dispatch action to add a new product
+  const handleSubmit = () => {
+    console.log("Submitting product:", product);
+    dispatch(addProduct(product));
+  };
 
   return (
     <ProductForm

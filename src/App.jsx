@@ -10,6 +10,8 @@ import CreateProduct from "./pages/CreateProduct.jsx";
 import EditProduct from "./pages/EditProduct.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
+import ProductList from "./pages/ProductList.jsx";
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/error" element={<ErrorPage />} />
           </Routes>
+
         </Container>
         <Footer />
       </Router>
