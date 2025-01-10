@@ -11,7 +11,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
-const Cart = () => {
+const Cart = ({ onClose }) => {
   // this is hard code, please add redux
   const cartItems = [
     {
@@ -36,6 +36,10 @@ const Cart = () => {
       imgLink: "https://via.placeholder.com/50",
     },
   ];
+
+  const handleClose = () => {
+    onClose();
+  };
 
   return (
     <Box
@@ -64,7 +68,7 @@ const Cart = () => {
         }}
       >
         <Typography variant="h6">Cart ({cartItems.length})</Typography>
-        <IconButton sx={{ color: "#fff" }}>
+        <IconButton sx={{ color: "#fff" }} onClick={handleClose}>
           <CloseIcon />
         </IconButton>
       </Box>
