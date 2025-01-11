@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import validator from 'validator';
 // Define the schema for the Product collection
 const productSchema = mongoose.Schema(
   {
@@ -33,10 +33,9 @@ const productSchema = mongoose.Schema(
       required: [true, 'Please add an image URL'], // Image URL is required
       validate: {
         validator: function (v) {
-          // Validate that the string is a URL
-          return /^(https?:\/\/.*\.(?:png|jpg|jpeg|webp|svg|gif|bmp))$/i.test(v);
+          return validator.isURL(v, { protocols: ['http', 'https'], require_protocol: true });
         },
-        message: 'Please provide a valid image URL', // Error message for invalid URL
+        message: 'Please provide a valid image URL',
       },
     },
   },

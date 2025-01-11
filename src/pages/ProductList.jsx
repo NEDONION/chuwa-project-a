@@ -6,75 +6,69 @@ import { Button, Select, MenuItem, Grid, Pagination } from '@mui/material';
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const { products, total } = useSelector((state) => state.products); // Get products and total from Redux store
-
-  const [page, setPage] = useState(1); // Manage current page
-  const [sortBy, setSortBy] = useState('price'); // Manage sort field
-  const [order, setOrder] = useState('asc'); // Manage sort order
-  const limit = 10; // Set items per page
+  const { products, total } = useSelector((state) => state.products); // Simplified
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('price');
+  const [order, setOrder] = useState('asc');
+  const limit = 10;
 
   // Fetch products when page, sortBy, or order changes
   useEffect(() => {
+    console.log("Fetching products with:", { page, sortBy, order, limit });
     dispatch(fetchProducts({ page, sortBy, order, limit }));
   }, [dispatch, page, sortBy, order]);
 
-  // Handle page change
   const handlePageChange = (event, value) => {
-    setPage(value); // Update page
+    console.log("Page changed to:", value);
+    setPage(value);
   };
 
-  // Handle sort field and order change
   const handleSortChange = (event) => {
     const selectedSort = event.target.value;
-    setSortBy(selectedSort === 'price-desc' ? 'price' : selectedSort); // Update sortBy
-    setOrder(selectedSort === 'price-desc' ? 'desc' : 'asc'); // Update order
+    setSortBy(selectedSort === 'price-desc' ? 'price' : selectedSort);
+    setOrder(selectedSort === 'createdAt' ? 'desc' : selectedSort === 'price-desc' ? 'desc' : 'asc');
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      {/* Header section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ margin: 0 }}>Products</h2> 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <Select
-            value={sortBy}
-            onChange={handleSortChange}
-            style={{ width: '200px' }} // Dropdown width
-          >
-            <MenuItem value="createdAt">Last added</MenuItem>
-            <MenuItem value="price">Price: low to high</MenuItem>
-            <MenuItem value="price-desc">Price: high to low</MenuItem>
-          </Select>
+        <Select
+          value={sortBy === 'price' && order === 'desc' ? 'price-desc' : sortBy} // 显示正确的标签
+          onChange={handleSortChange}
+          style={{ width: '200px' }}
+        >
+          <MenuItem value="createdAt">Last added</MenuItem>
+          <MenuItem value="price">Price: low to high</MenuItem>
+          <MenuItem value="price-desc">Price: high to low</MenuItem>
+        </Select>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => (window.location.href = '/create-product')} // Redirect to create product page
+            onClick={() => (window.location.href = '/create-product')}
           >
             Add Product
           </Button>
         </div>
       </div>
-  
-      {/* Product grid */}
-      <Grid container spacing={2}> {/* Adjust spacing */}
-        {products.map((product) => (
+      <Grid container spacing={2}>
+        {(products || []).map((product) => (
           <Grid
             item
             xs={12}
             sm={6}
             md={4}
-            lg={2.4} // Five cards in a row
+            lg={2.4}
             key={product._id}
-            style={{ display: 'flex', justifyContent: 'center' }} // Center cards
+            style={{ display: 'flex', justifyContent: 'center' }}
           >
             <ProductCard product={product} />
           </Grid>
         ))}
       </Grid>
-  
-      {/* Pagination */}
       <Pagination
-        count={Math.ceil(total / limit)} // Calculate total pages
+        count={Math.ceil(total / limit)}
         page={page}
         onChange={handlePageChange}
         style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}
