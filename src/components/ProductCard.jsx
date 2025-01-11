@@ -1,9 +1,25 @@
 import React from 'react';
 import { Card, CardMedia, CardContent, Typography, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleViewDetails = () => {
+    navigate('/detail', { state: { product } }); // Navigate to `/detail` page with product data
+  };
+
   return (
-    <Card style={{ width: '242px', height: '303px', margin: '10px auto', boxShadow: '0px 2px 6px rgba(0,0,0,0.1)' }}>
+    <Card
+      style={{
+        width: '242px',
+        height: '303px',
+        margin: '10px auto',
+        boxShadow: '0px 2px 6px rgba(0,0,0,0.1)',
+        cursor: 'pointer', // Indicate clickable card
+      }}
+      onClick={handleViewDetails} // Add click event to navigate
+    >
       <CardMedia
         component="img"
         height="70%" // Adjust image height to take 70% of the card
@@ -25,7 +41,10 @@ const ProductCard = ({ product }) => {
           color="primary"
           size="small"
           style={{ width: '48%', fontSize: '12px', height: '30px' }} // Shrink button size
-          onClick={() => alert('Added to cart')} // Add to cart functionality
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent card click event
+            alert('Added to cart'); // Add to cart functionality
+          }}
         >
           Add
         </Button>
@@ -33,7 +52,10 @@ const ProductCard = ({ product }) => {
           variant="outlined"
           size="small"
           style={{ width: '48%', fontSize: '12px', height: '30px' }} // Shrink button size
-          onClick={() => (window.location.href = `/edit-product/${product._id}`)} // Navigate to edit product page
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent card click event
+            window.location.href = `/edit-product/${product._id}`; // Navigate to edit product page
+          }}
         >
           Edit
         </Button>

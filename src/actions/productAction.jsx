@@ -3,9 +3,13 @@ import { actionType } from "../helper";
 
 // Action Creators
 // Fetch all products from the backend
-export const fetchProducts = () => async (dispatch) => {
+export const fetchProducts = ({ page, sortBy, order, limit }) => async (dispatch) => {
   try {
-    const response = await fetch('http://localhost:5001/api/products', {
+    // Dynamically construct the URL with query parameters
+    const url = `http://localhost:5001/api/products?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}`;
+    console.log("Fetching URL:", url); // Log the constructed URL
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -17,7 +21,7 @@ export const fetchProducts = () => async (dispatch) => {
     }
 
     const data = await response.json();
-
+    console.log("Data fetched:", data); // Log the response data
 
     dispatch({
       type: actionType.FETCH_PRODUCT,
