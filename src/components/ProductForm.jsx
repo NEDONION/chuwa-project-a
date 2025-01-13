@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Box, TextField, Button, Select, MenuItem, Typography, Grid } from "@mui/material";
 
 const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
-  const [product, setProduct] = useState(initVals);
+  const [product, setProduct] = useState({
+    name: initVals.name || "",
+    description: initVals.description || "",
+    category: initVals.category || "",
+    price: initVals.price || 0,
+    quantity: initVals.quantity || 0,
+    imageLink: initVals.imageLink || "",
+  });
   const [previewImage, setPreviewImage] = useState(null);
 
-  // Update product state based on input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updatedProduct = { ...product, [name]: value };
+  
+    const updatedProduct = product._id 
+      ? { ...product, [name]: value, _id: product._id } 
+      : { ...product, [name]: value };
+  
     setProduct(updatedProduct);
     onChange(updatedProduct);
   };
 
-  // Preview the image based on the provided URL
   const handleUploadImage = () => {
-    if (product.imageLink && product.imageLink.startsWith('http')) {
+    if (product.imageLink && product.imageLink.startsWith("http")) {
       setPreviewImage(product.imageLink);
     } else {
       setPreviewImage(null);
@@ -25,7 +34,7 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'left' }}>{title}</h2>
+      <h2 style={{ textAlign: "left" }}>{title}</h2>
       <Box
         sx={{
           maxWidth: 600,
@@ -145,7 +154,10 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
                 <img
                   src={previewImage}
                   alt="Preview image"
-                  onError={() => setPreviewImage(null)}
+                  onError={() => {
+                    setPreviewImage(null);
+                    alert("Failed to load the image. Please check the URL.");
+                  }}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -166,12 +178,8 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
               color="primary"
               onClick={onSubmit}
               disabled={
-                !product.name ||
-                !product.description ||
-                !product.category ||
-                !product.price ||
-                !product.quantity ||
-                !product.imageLink
+                Object.values(product).some((val) => !val) || // Ensure no field is empty
+                !product.imageLink.startsWith("http")
               }
             >
               {btnLabel}

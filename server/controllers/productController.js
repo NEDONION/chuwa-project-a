@@ -60,3 +60,61 @@ export const getAllProducts = async (req, res) => {
     res.status(500).json({ message: 'Server error' }); // Handle server errors
   }
 };
+
+export const updateProduct = async (req, res) => {
+  const { id } = req.params; 
+  const {
+    name,
+    description,
+    category,
+    price,
+    quantity, 
+    imageLink, 
+  } = req.body;
+
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id, 
+      {
+        name,
+        description,
+        category,
+        price,
+        inStockQuantity: quantity, 
+        imageUrl: imageLink, 
+      },
+      { new: true, runValidators: true } 
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error('Error updating product:', error.message);
+
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({ message: messages });
+    }
+
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error('Error fetching product by ID:', error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

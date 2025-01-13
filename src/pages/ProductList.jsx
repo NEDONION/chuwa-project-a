@@ -63,7 +63,10 @@ const ProductList = () => {
             key={product._id}
             style={{ display: 'flex', justifyContent: 'center' }}
           >
-            <ProductCard product={product} />
+            <ProductCard
+              product={product}
+              onViewDetails={() => navigate(`/detail/${product._id}`)} 
+            />
           </Grid>
         ))}
       </Grid>
