@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRoutes from "./routes/cartRoutes.js";
 
 dotenv.config({ path: '../.env' }); 
 
@@ -21,13 +22,14 @@ app.use(
 );
 
 app.use(express.json());
-
+app.use("/api/cart", cartRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
+
 
 const PORT = process.env.PORT || 5000;
 

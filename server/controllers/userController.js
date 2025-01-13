@@ -58,3 +58,17 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, 'email password'); // Retrieve only email and password
+    if (!users.length) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    res.status(200).json(users); // Return the list of users
+  } catch (error) {
+    console.error('Error fetching all users:', error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
