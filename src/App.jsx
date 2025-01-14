@@ -11,16 +11,20 @@ import EditProduct from "./pages/EditProduct.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProductList from "./pages/ProductList.jsx";
-
+import { useState } from "react";
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState(""); // State to manage search input
+
   return (
     <>
       <Router>
-        <Header />
+        {/* Pass `onSearch` to Header */}
+        <Header onSearch={(query) => setSearchQuery(query)} />
         <Container>
           <Routes>
-            <Route path="/" element={<ProductList />} />
+            {/* Pass `searchQuery` to ProductList */}
+            <Route path="/" element={<ProductList searchQuery={searchQuery} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/update-password" element={<UpdatePassword />} />
@@ -29,7 +33,6 @@ function App() {
             <Route path="/detail/:id" element={<ProductDetail />} />
             <Route path="/error" element={<ErrorPage />} />
           </Routes>
-
         </Container>
         <Footer />
       </Router>

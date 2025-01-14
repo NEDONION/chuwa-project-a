@@ -11,7 +11,6 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
-// Cart Component
 const Cart = ({ onClose }) => {
   const [cartItems, setCartItems] = useState([]); // State to hold cart data
   const [discountCode, setDiscountCode] = useState(""); // For handling discount code input
@@ -22,25 +21,21 @@ const Cart = ({ onClose }) => {
     total: 0,
   });
 
-  // Get the userId from localStorage or use a default anonymous ID
   const userId = localStorage.getItem("userId") || "000000000000000000000000";
 
-  // Fetch cart data from backend for logged-in users, from localStorage for anonymous users
   useEffect(() => {
     const fetchCartData = async () => {
       if (userId === "000000000000000000000000") {
-        // Anonymous user - get cart from localStorage
         const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartItems(storedCartItems); // Set the cart items state to the stored cart items
-        calculateSummary(storedCartItems); // Recalculate summary after loading from localStorage
+        setCartItems(storedCartItems);
+        calculateSummary(storedCartItems);
       } else {
-        // Logged-in user - fetch cart from backend
         try {
           const response = await fetch(`http://localhost:5001/api/cart/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            setCartItems(data.items); // Set the cart items state to the fetched cart data
-            calculateSummary(data.items); // Recalculate summary after fetching items
+            setCartItems(data.items);
+            calculateSummary(data.items);
           } else {
             console.error("Failed to fetch cart");
           }
@@ -53,49 +48,51 @@ const Cart = ({ onClose }) => {
     fetchCartData();
   }, [userId]);
 
-  // Calculate the subtotal, tax, discount, and total based on cart items
   const calculateSummary = (items) => {
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const tax = subtotal * 0.1; 
     const discount = discountCode ? Math.min(subtotal + tax, discountCode) : 0; 
     let total = subtotal + tax - discount;
-    total = Math.max(0, total); // Ensure total doesn't go below 0
-    
+    total = Math.max(0, total); 
+
     setSummary({
       subtotal: subtotal.toFixed(2),
       tax: tax.toFixed(2),
       discount: discount.toFixed(2),
       total: total.toFixed(2),
     });
+
+    // 触发 `cartUpdate` 事件
+    window.dispatchEvent(new Event("cartUpdate"));
   };
 
-  // Apply discount code when user clicks Apply
-  const handleApplyDiscount = () => {
-    if (discountCode && !isNaN(discountCode)) {
-      calculateSummary(cartItems); // Recalculate the summary after applying discount
-    } else {
-      alert("Invalid discount code");
-    }
+  const updateCart = (updatedItems) => {
+    setCartItems(updatedItems);
+    localStorage.setItem("cart", JSON.stringify(updatedItems)); // 同步 localStorage
+    calculateSummary(updatedItems); // 更新购物车小计和 Header
   };
 
-  // Handle item removal
   const handleRemoveItem = (productId) => {
     const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
-    setCartItems(updatedCartItems);
-    calculateSummary(updatedCartItems); // Recalculate summary after item removal
-    localStorage.setItem("cart", JSON.stringify(updatedCartItems)); // Save updated cart in localStorage
+    updateCart(updatedCartItems); // 更新购物车
   };
 
-  // Handle quantity change
   const handleChangeQuantity = (productId, operation) => {
     const updatedCartItems = cartItems.map((item) =>
       item.productId === productId
-        ? { ...item, quantity: operation === "increase" ? item.quantity + 1 : item.quantity - 1 }
+        ? { ...item, quantity: operation === "increase" ? item.quantity + 1 : Math.max(item.quantity - 1, 0) }
         : item
-    );
-    setCartItems(updatedCartItems);
-    calculateSummary(updatedCartItems); // Recalculate summary after quantity change
-    localStorage.setItem("cart", JSON.stringify(updatedCartItems)); // Save updated cart in localStorage
+    ).filter((item) => item.quantity > 0); // 移除数量为 0 的商品
+
+    updateCart(updatedCartItems); // 更新购物车
+  };
+
+  const handleApplyDiscount = () => {
+    if (discountCode && !isNaN(discountCode)) {
+      calculateSummary(cartItems); // 重新计算总计
+    } else {
+      alert("Invalid discount code");
+    }
   };
 
   const handleClose = () => {
@@ -104,7 +101,6 @@ const Cart = ({ onClose }) => {
 
   const handleLogin = async (newUserId) => {
     if (userId === "000000000000000000000000") {
-      // If user was anonymous, update the cart on the backend for the new logged-in user
       try {
         const cartData = {
           userId: newUserId,
@@ -119,7 +115,7 @@ const Cart = ({ onClose }) => {
         });
 
         if (response.ok) {
-          localStorage.setItem("userId", newUserId); // Save new userId in localStorage
+          localStorage.setItem("userId", newUserId);
           alert("Cart transferred to your account!");
         } else {
           alert("Failed to transfer cart to your account.");
@@ -140,7 +136,6 @@ const Cart = ({ onClose }) => {
         </IconButton>
       </Box>
 
-      {/* Cart Items */}
       <Box sx={{ padding: "16px" }}>
         {cartItems.map((item, index) => (
           <Box key={index} sx={{ display: "flex", flexDirection: "column", position: "relative", border: "1px solid #ddd", borderRadius: "8px", padding: "16px", marginBottom: "16px" }}>
@@ -175,7 +170,6 @@ const Cart = ({ onClose }) => {
         ))}
       </Box>
 
-      {/* Discount Code */}
       <Divider />
       <Box sx={{ padding: "16px" }}>
         <Typography variant="body2" fontWeight="bold" gutterBottom>
@@ -185,7 +179,7 @@ const Cart = ({ onClose }) => {
           <TextField
             fullWidth
             value={discountCode}
-            onChange={(e) => setDiscountCode(e.target.value)} // Update discount code
+            onChange={(e) => setDiscountCode(e.target.value)}
             size="small"
             variant="outlined"
             placeholder="Enter discount code"
@@ -196,7 +190,6 @@ const Cart = ({ onClose }) => {
         </Box>
       </Box>
 
-      {/* Summary */}
       <Divider />
       <Box sx={{ padding: "16px" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
@@ -218,7 +211,6 @@ const Cart = ({ onClose }) => {
         </Box>
       </Box>
 
-      {/* Checkout Button */}
       <Box sx={{ backgroundColor: "#6c63ff", padding: "16px", textAlign: "center" }}>
         <Button variant="contained" sx={{ width: "100%", backgroundColor: "#fff", color: "#6c63ff" }}>
           Continue to checkout
