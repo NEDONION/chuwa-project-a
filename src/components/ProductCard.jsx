@@ -3,17 +3,17 @@ import { Card, CardMedia, CardContent, Typography, Button, IconButton } from '@m
 import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { v4 as uuidv4 } from 'uuid'; // Import UUID for generating a unique ID
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate(); // Hook for navigation
   const [quantity, setQuantity] = useState(0); // State to manage quantity
   const [showSelector, setShowSelector] = useState(false); // State to control Add button visibility
 
-  // Get or generate a user ID (either from localStorage or a new UUID)
-  const userId = localStorage.getItem('userId') || uuidv4();
+// Get or generate a user ID (either from localStorage or set to '000000000000000000000000' for anonymous users)
+  const userId = localStorage.getItem('userId') || '000000000000000000000000'; // Default to a fixed ID for anonymous users
+
   if (!localStorage.getItem('userId')) {
-    localStorage.setItem('userId', userId); // Save the generated userId to localStorage
+    localStorage.setItem('userId', userId); // Save the generated or fixed userId to localStorage
   }
 
   // Function to handle "Add to Cart" submission
