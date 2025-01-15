@@ -1,17 +1,21 @@
-import { actionType} from "../helper";
-
+import { actionType } from "../helper";
 
 const initialState = {
-    signedIn: false, // Default to not signed in
+    signedIn: false, 
+    role: null, // Default role is null
 };
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionType.TOGGLE_SIGN_IN:
-            console.log(`[reducer]TOGGLE_SIGN_IN`); 
             return {
                 ...state,
-                signedIn: !state.signedIn, // Toggle the signedIn state
+                signedIn: !state.signedIn, 
+            };
+        case actionType.SET_ROLE:
+            return {
+                ...state,
+                role: action.payload, // Set the user role from the payload
             };
         default:
             return state;

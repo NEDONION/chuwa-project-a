@@ -7,3 +7,10 @@ export const isSignedIn = () => {
     type: actionType.TOGGLE_SIGN_IN,
   };
 };
+
+export const setRole = (role) => {
+  return {
+    type: actionType.SET_ROLE,
+    payload: role, // The role of the user, e.g., 'admin' or 'regular'
+  };
+};

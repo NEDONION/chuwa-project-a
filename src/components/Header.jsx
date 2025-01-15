@@ -5,7 +5,7 @@ import Picture2 from "../assets/picture2.png"; // Cart icon
 import Picture3 from "../assets/picture3.png"; // Search icon
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import { useSelector, useDispatch } from "react-redux";
-import { isSignedIn } from "../actions/authAction";
+import { isSignedIn, setRole } from "../actions/authAction";
 import Cart from "./Cart";
 
 const Header = ({ onSearch }) => {
@@ -49,9 +49,17 @@ const Header = ({ onSearch }) => {
       // when not signed in, navigate to the Sign In page
       navigate("/signin");
     } else {
-      // when in signed-in status, clicking "sign out" will log out
+      // when signed in, sign out the user
       dispatch(isSignedIn()); // Update the signed-in status in the Redux store
+      dispatch(setRole(null)); // Clear the user's role in Redux store
+  
+      // Clear user data from localStorage
       localStorage.removeItem("authToken");
+      localStorage.removeItem("userId"); // Optionally clear user ID from localStorage
+      localStorage.removeItem("cart"); // Optionally clear cart data
+  
+      // Redirect to home page or any other page if necessary
+      navigate("/"); // Optionally navigate to the homepage or another page
     }
   };
 

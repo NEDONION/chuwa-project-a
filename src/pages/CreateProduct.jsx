@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../actions/productAction';
@@ -29,6 +28,7 @@ const CreateProduct = () => {
   const handleSubmit = () => {
     console.log("Submitting product:", product);
     dispatch(addProduct(product));
+    navigate('/'); 
   };
 
   return (

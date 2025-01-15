@@ -3,4 +3,5 @@ export const actionType = {
     'FETCH_PRODUCT': 'FETCH_PRODUCT',
     'EDIT_PRODUCT': 'EDIT_PRODUCT',
     'TOGGLE_SIGN_IN': 'TOGGLE_SIGN_IN',
+    'SET_ROLE': 'SET_ROLE',
 }

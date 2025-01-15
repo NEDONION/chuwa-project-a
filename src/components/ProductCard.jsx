@@ -3,17 +3,20 @@ import { Card, CardMedia, CardContent, Typography, Button, IconButton } from '@m
 import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 
 const ProductCard = ({ product, onQuantityChange }) => {
-  const navigate = useNavigate(); // Hook for navigation
-  const [quantity, setQuantity] = useState(0); // State to manage quantity
-  const [showSelector, setShowSelector] = useState(false); // State to control Add button visibility
+  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(0);
+  const [showSelector, setShowSelector] = useState(false);
 
-  // Get or generate a user ID (either from localStorage or set to '000000000000000000000000' for anonymous users)
-  const userId = localStorage.getItem('userId') || '000000000000000000000000'; // Default to a fixed ID for anonymous users
+  // Access user role from Redux store
+  const role = useSelector((state) => state.auth.role); // Get the role from Redux store
+
+  const userId = localStorage.getItem('userId') || '000000000000000000000000';
 
   if (!localStorage.getItem('userId')) {
-    localStorage.setItem('userId', userId); // Save the generated or fixed userId to localStorage
+    localStorage.setItem('userId', userId);
   }
 
   const handleAddToCart = async () => {
@@ -78,7 +81,7 @@ const ProductCard = ({ product, onQuantityChange }) => {
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}
-      onClick={() => navigate(`/detail/${product._id}`)} // Navigate to detail page on card click
+      onClick={() => navigate(`/detail/${product._id}`)}
     >
       <CardMedia
         component="img"
@@ -107,28 +110,25 @@ const ProductCard = ({ product, onQuantityChange }) => {
             size="small"
             style={{ width: '48%', fontSize: '12px', height: '30px' }}
             onClick={(e) => {
-              e.stopPropagation(); // Prevent card click event
-              setShowSelector(true); // Show quantity selector
-              setQuantity(1); // Default quantity to 1
-              onQuantityChange(product._id, 1); // Notify parent about quantity change
+              e.stopPropagation();
+              setShowSelector(true);
+              setQuantity(1);
+              onQuantityChange(product._id, 1);
             }}
           >
             Add
           </Button>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent card click event
-                const newQuantity = Math.max(quantity - 1, 0);
-                setQuantity(newQuantity);
-                onQuantityChange(product._id, newQuantity); // Notify parent about quantity change
-                if (newQuantity === 0) {
-                  setShowSelector(false);
-                }
-              }}
-            >
+            <IconButton size="small" onClick={(e) => {
+              e.stopPropagation();
+              const newQuantity = Math.max(quantity - 1, 0);
+              setQuantity(newQuantity);
+              onQuantityChange(product._id, newQuantity);
+              if (newQuantity === 0) {
+                setShowSelector(false);
+              }
+            }}>
               <RemoveIcon />
             </IconButton>
             <Typography
@@ -139,7 +139,7 @@ const ProductCard = ({ product, onQuantityChange }) => {
                 color: '#007bff',
               }}
               onClick={(e) => {
-                e.stopPropagation(); // Prevent card click event
+                e.stopPropagation();
                 handleAddToCart();
               }}
             >
@@ -151,24 +151,27 @@ const ProductCard = ({ product, onQuantityChange }) => {
                 e.stopPropagation();
                 const newQuantity = quantity + 1;
                 setQuantity(newQuantity);
-                onQuantityChange(product._id, newQuantity); // Notify parent about quantity change
+                onQuantityChange(product._id, newQuantity);
               }}
             >
               <AddIcon />
             </IconButton>
           </div>
         )}
-        <Button
-          variant="outlined"
-          size="small"
-          style={{ width: '48%', fontSize: '12px', height: '30px' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/edit-product/${product._id}`, { state: { product } });
-          }}
-        >
-          Edit
-        </Button>
+        {/* Show 'Edit' button only if the user is an admin */}
+        {role === 'Admin' && (
+          <Button
+            variant="outlined"
+            size="small"
+            style={{ width: '48%', fontSize: '12px', height: '30px' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/edit-product/${product._id}`, { state: { product } });
+            }}
+          >
+            Edit
+          </Button>
+        )}
       </div>
     </Card>
   );

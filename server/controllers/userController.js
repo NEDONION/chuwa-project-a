@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
@@ -52,14 +52,17 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    // Create a JWT token with the user's role
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role }, // Include the role in the token payload
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '1h' }
     );
 
     res.status(200).json({
       token,
+      userId: user._id, // Add userId to the response
+      role: user.role,  // Include the role in the response
       message: 'Login successful',
     });
   } catch (error) {

@@ -33,14 +33,14 @@ const ProductList = ({ searchQuery }) => {
     );
   };
 
-  const handleAddAllToCart = () => {
+  const handleAddAllToCart = async () => {
     const userId = localStorage.getItem("userId") || "000000000000000000000000";
     if (!localStorage.getItem("userId")) {
       localStorage.setItem("userId", userId);
     }
-
+  
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
+  
     Object.keys(quantities).forEach((productId) => {
       const quantity = quantities[productId];
       if (quantity > 0) {
@@ -61,13 +61,30 @@ const ProductList = ({ searchQuery }) => {
         }
       }
     });
-
+  
     localStorage.setItem("cart", JSON.stringify(cart));
-
+  
     // Trigger a custom event to notify Header
     window.dispatchEvent(new Event("cartUpdate"));
-
-    alert("Products added to cart successfully!");
+  
+    // Sync cart with backend
+    try {
+      const response = await fetch(`http://localhost:5001/api/cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, items: cart }),
+      });
+  
+      if (response.ok) {
+        alert("Products added to cart successfully!");
+      } else {
+        console.error("Failed to sync cart with backend");
+      }
+    } catch (error) {
+      console.error("Error syncing cart with backend:", error);
+    }
   };
 
   const handleQuantityChange = (productId, quantity) => {

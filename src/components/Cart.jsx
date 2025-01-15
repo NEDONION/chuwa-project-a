@@ -23,21 +23,23 @@ const Cart = ({ onClose }) => {
 
   const userId = localStorage.getItem("userId") || "000000000000000000000000";
 
+  // Fetch cart data from localStorage or Backend
   useEffect(() => {
     const fetchCartData = async () => {
-      if (userId === "000000000000000000000000") {
-        const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartItems(storedCartItems);
-        calculateSummary(storedCartItems);
-      } else {
+      const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartItems(storedCartItems); // Update local state from localStorage
+      calculateSummary(storedCartItems); // Calculate summary from localStorage data
+
+      // Fetch from backend if user is logged in
+      if (userId && userId !== "000000000000000000000000") {
         try {
           const response = await fetch(`http://localhost:5001/api/cart/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            setCartItems(data.items);
-            calculateSummary(data.items);
+            setCartItems(data.items); // Set backend cart items
+            calculateSummary(data.items); // Calculate summary from backend data
           } else {
-            console.error("Failed to fetch cart");
+            console.error("Failed to fetch cart from backend");
           }
         } catch (error) {
           console.error("Error fetching cart:", error.message);
@@ -50,10 +52,10 @@ const Cart = ({ onClose }) => {
 
   const calculateSummary = (items) => {
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const tax = subtotal * 0.1; 
-    const discount = discountCode ? Math.min(subtotal + tax, discountCode) : 0; 
+    const tax = subtotal * 0.1;
+    const discount = discountCode ? Math.min(subtotal + tax, discountCode) : 0;
     let total = subtotal + tax - discount;
-    total = Math.max(0, total); 
+    total = Math.max(0, total);
 
     setSummary({
       subtotal: subtotal.toFixed(2),
@@ -62,34 +64,95 @@ const Cart = ({ onClose }) => {
       total: total.toFixed(2),
     });
 
-    // 触发 `cartUpdate` 事件
-    window.dispatchEvent(new Event("cartUpdate"));
+    // Update localStorage immediately
+    localStorage.setItem("cart", JSON.stringify(items));
   };
 
-  const updateCart = (updatedItems) => {
+  const updateCart = async (updatedItems) => {
     setCartItems(updatedItems);
-    localStorage.setItem("cart", JSON.stringify(updatedItems)); // 同步 localStorage
-    calculateSummary(updatedItems); // 更新购物车小计和 Header
+    localStorage.setItem("cart", JSON.stringify(updatedItems)); // Update localStorage
+
+    const userId = localStorage.getItem("userId");
+
+    if (userId !== "000000000000000000000000") {
+      try {
+        const response = await fetch(`http://localhost:5001/api/cart`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, items: updatedItems }),
+        });
+
+        if (response.ok) {
+          const updatedCart = await response.json();
+          setCartItems(updatedCart.items); // Update cart data from backend
+          calculateSummary(updatedCart.items); // Update summary
+        } else {
+          console.error("Failed to update cart on backend");
+        }
+      } catch (error) {
+        console.error("Error syncing cart with backend:", error.message);
+      }
+    }
   };
 
-  const handleRemoveItem = (productId) => {
+  const handleRemoveItem = async (productId) => {
     const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
-    updateCart(updatedCartItems); // 更新购物车
+    updateCart(updatedCartItems); // Remove from state and localStorage
+
+    const userId = localStorage.getItem("userId");
+
+    if (userId !== "000000000000000000000000") {
+      try {
+        const response = await fetch(`http://localhost:5001/api/cart/remove`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, productId }),
+        });
+
+        if (response.ok) {
+          const updatedCart = await response.json();
+          setCartItems(updatedCart.items);
+          calculateSummary(updatedCart.items); // Update summary
+        }
+      } catch (error) {
+        console.error("Error removing item:", error);
+      }
+    }
   };
 
-  const handleChangeQuantity = (productId, operation) => {
+  const handleChangeQuantity = async (productId, operation) => {
     const updatedCartItems = cartItems.map((item) =>
       item.productId === productId
         ? { ...item, quantity: operation === "increase" ? item.quantity + 1 : Math.max(item.quantity - 1, 0) }
         : item
-    ).filter((item) => item.quantity > 0); // 移除数量为 0 的商品
+    ).filter((item) => item.quantity > 0); // Remove items with quantity 0
 
-    updateCart(updatedCartItems); // 更新购物车
+    updateCart(updatedCartItems); // Update state and localStorage
+
+    const userId = localStorage.getItem("userId");
+
+    if (userId !== "000000000000000000000000") {
+      try {
+        const response = await fetch(`http://localhost:5001/api/cart/updateQuantity`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, items: updatedCartItems }),
+        });
+
+        if (response.ok) {
+          const updatedCart = await response.json();
+          setCartItems(updatedCart.items);
+          calculateSummary(updatedCart.items); // Update summary
+        }
+      } catch (error) {
+        console.error("Error syncing cart with backend:", error);
+      }
+    }
   };
 
   const handleApplyDiscount = () => {
     if (discountCode && !isNaN(discountCode)) {
-      calculateSummary(cartItems); // 重新计算总计
+      calculateSummary(cartItems);
     } else {
       alert("Invalid discount code");
     }
@@ -97,34 +160,6 @@ const Cart = ({ onClose }) => {
 
   const handleClose = () => {
     onClose();
-  };
-
-  const handleLogin = async (newUserId) => {
-    if (userId === "000000000000000000000000") {
-      try {
-        const cartData = {
-          userId: newUserId,
-          items: cartItems,
-        };
-        const response = await fetch(`http://localhost:5001/api/cart`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(cartData),
-        });
-
-        if (response.ok) {
-          localStorage.setItem("userId", newUserId);
-          alert("Cart transferred to your account!");
-        } else {
-          alert("Failed to transfer cart to your account.");
-        }
-      } catch (error) {
-        console.error("Error transferring cart:", error.message);
-        alert("Error transferring cart.");
-      }
-    }
   };
 
   return (
