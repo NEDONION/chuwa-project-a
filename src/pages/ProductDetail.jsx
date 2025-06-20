@@ -12,6 +12,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(0);
   const [showSelector, setShowSelector] = useState(false);
   const role = useSelector((state) => state.auth.role);
+  const signedIn = useSelector((state) => state.auth.signedIn);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,6 +31,12 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
+    if (!signedIn) {
+      alert("Please sign in to add items to your cart.");
+      navigate('/signin');
+      return;
+    }
+
     if (quantity === 0) {
       alert("Please select at least one item.");
       return;
@@ -80,6 +87,16 @@ const ProductDetail = () => {
     }
   };
 
+  const handleShowSelector = () => {
+    if (!signedIn) {
+      alert("Please sign in to add items to your cart.");
+      navigate('/signin');
+    } else {
+      setShowSelector(true);
+      setQuantity(1);
+    }
+  };
+
   if (!product) {
     return <Typography variant="h6" style={{ textAlign: "center", marginTop: "20px" }}>Loading product details...</Typography>;
   }
@@ -113,7 +130,7 @@ const ProductDetail = () => {
             <Box sx={{ marginTop: 4 }}>
               {product.inStockQuantity > 0 ? (
                 !showSelector ? (
-                  <Button variant="contained" color="primary" size="large" sx={{ fontSize: "1.2rem", padding: "10px 20px" }} onClick={() => { setShowSelector(true); setQuantity(1); }}>
+                  <Button variant="contained" color="primary" size="large" sx={{ fontSize: "1.2rem", padding: "10px 20px" }} onClick={handleShowSelector}>
                     Add To Cart
                   </Button>
                 ) : (

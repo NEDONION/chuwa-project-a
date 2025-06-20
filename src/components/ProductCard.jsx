@@ -1,71 +1,27 @@
 import React, { useState } from 'react';
-import { Card, CardMedia, CardContent, Typography, Button, IconButton } from '@mui/material';
+import { Card, CardMedia, CardContent, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
-import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
+import { useSelector } from 'react-redux';
 
-const ProductCard = ({ product, onQuantityChange }) => {
+const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState(0);
-  const [showSelector, setShowSelector] = useState(false);
+  const role = useSelector((state) => state.auth.role);
+  const signedIn = useSelector((state) => state.auth.signedIn);
 
-  // Access user role from Redux store
-  const role = useSelector((state) => state.auth.role); // Get the role from Redux store
+  // Encapsulated navigation logic
+  const navigateToProductDetail = () => {
+    navigate(`/detail/${product._id}`);
+  };
 
-  const userId = localStorage.getItem('userId') || '000000000000000000000000';
-
-  if (!localStorage.getItem('userId')) {
-    localStorage.setItem('userId', userId);
-  }
-
-  const handleAddToCart = async () => {
-    if (quantity === 0) {
-      alert("Please select at least one item.");
-      return;
-    }
-  
-    const userId = localStorage.getItem("userId") || "000000000000000000000000";
-  
-    if (!localStorage.getItem("userId")) {
-      localStorage.setItem("userId", userId);
-    }
-  
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProduct = cart.find((item) => item.productId === product._id);
-  
-    if (existingProduct) {
-      existingProduct.quantity += quantity;
+  // 点击 ADD 按钮跳转到 商品详情页
+  // 如果未登录，则跳转到登录页，并提示用户先登录
+  const handleAddClick = (e) => {
+    e.stopPropagation();
+    if (!signedIn) {
+      alert("Please sign in to view product details.");
+      navigate('/signin');
     } else {
-      cart.push({
-        productId: product._id,
-        quantity,
-        name: product.name,
-        price: product.price,
-        imgLink: product.imageUrl,
-      });
-    }
-  
-    localStorage.setItem("cart", JSON.stringify(cart));
-  
-    // Trigger a custom event to notify Header
-    window.dispatchEvent(new Event("cartUpdate"));
-  
-    try {
-      const response = await fetch("http://localhost:5001/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, items: cart }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to add to cart");
-      }
-  
-      alert(`Successfully added ${quantity} item(s) to the cart.`);
-    } catch (error) {
-      console.error("Error adding to cart:", error.message);
-      alert("Failed to add to cart. Please try again.");
+      navigateToProductDetail();
     }
   };
 
@@ -81,18 +37,13 @@ const ProductCard = ({ product, onQuantityChange }) => {
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}
-      onClick={() => navigate(`/detail/${product._id}`)}
+      onClick={navigateToProductDetail}
     >
       <CardMedia
         component="img"
         image={product.imageUrl}
         alt={product.name}
-        style={{
-          width: '100%',
-          height: '240px',
-          objectFit: 'contain',
-          margin: 'auto',
-        }}
+        style={{ width: '100%', height: '240px', objectFit: 'contain', margin: 'auto' }}
       />
       <CardContent style={{ textAlign: 'left', padding: '10px' }}>
         <Typography variant="subtitle2" style={{ fontSize: '14px', fontWeight: 'normal', marginBottom: '5px' }}>
@@ -103,65 +54,20 @@ const ProductCard = ({ product, onQuantityChange }) => {
         </Typography>
       </CardContent>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
-        {!showSelector ? (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{ width: '100%', fontSize: '12px', height: '30px' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/detail/${product._id}`);
-            }}
-          >
-            Add
-          </Button>
-        ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton size="small" onClick={(e) => {
-              e.stopPropagation();
-              const newQuantity = Math.max(quantity - 1, 0);
-              setQuantity(newQuantity);
-              onQuantityChange(product._id, newQuantity);
-              if (newQuantity === 0) {
-                setShowSelector(false);
-              }
-            }}>
-              <RemoveIcon />
-            </IconButton>
-            <Typography
-              variant="body2"
-              style={{
-                margin: '0 10px',
-                fontWeight: 'bold',
-                color: '#007bff',
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToCart();
-              }}
-            >
-              {quantity}
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                const newQuantity = quantity + 1;
-                setQuantity(newQuantity);
-                onQuantityChange(product._id, newQuantity);
-              }}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
-        )}
-        {/* Show 'Edit' button only if the user is an admin */}
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ width: '100%', fontSize: '12px', height: '30px' }}
+          onClick={handleAddClick}
+        >
+          Add
+        </Button>
         {role === 'Admin' && (
           <Button
             variant="outlined"
             size="small"
-            style={{ width: '48%', fontSize: '12px', height: '30px' }}
+            style={{ width: '48%', fontSize: '12px', height: '30px', marginLeft: '4%' }}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/edit-product/${product._id}`, { state: { product } });
