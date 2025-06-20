@@ -179,7 +179,7 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
               onClick={onSubmit}
               disabled={
                 Object.values(product).some((val) => !val) || // Ensure no field is empty
-                !product.imageLink.startsWith("http")
+                !product.imageLink.startsWith("https")
               }
             >
               {btnLabel}

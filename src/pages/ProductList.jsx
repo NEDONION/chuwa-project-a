@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../actions/productAction";
 import ProductCard from "../components/ProductCard";
 import { Button, Select, MenuItem, Grid, Pagination, Box } from "@mui/material";
+import CreateProduct from "./CreateProduct.jsx";
+import {useNavigate} from "react-router-dom";
 
 const ProductList = ({ searchQuery }) => {
   const dispatch = useDispatch();
@@ -12,6 +14,7 @@ const ProductList = ({ searchQuery }) => {
   const [order, setOrder] = useState("asc");
   const [quantities, setQuantities] = useState({});
   const limit = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchProducts({ page, sortBy, order, limit }));
@@ -38,6 +41,8 @@ const ProductList = ({ searchQuery }) => {
     if (!localStorage.getItem("userId")) {
       localStorage.setItem("userId", userId);
     }
+
+    console.log(userId);
   
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
   
@@ -126,7 +131,7 @@ const ProductList = ({ searchQuery }) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleAddAllToCart}
+            onClick={() => navigate('/create-product')}
           >
             Add Product
           </Button>

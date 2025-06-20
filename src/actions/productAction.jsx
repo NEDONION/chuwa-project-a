@@ -35,6 +35,7 @@ export const fetchProducts = ({ page, sortBy, order, limit }) => async (dispatch
 // Add a new product to the backend
 export const addProduct = (product) => async (dispatch) => {
   try {
+    console.log(`[action]addProduct, product: `, product);
     const response = await fetch('http://localhost:5001/api/products', {
       method: 'POST',
 

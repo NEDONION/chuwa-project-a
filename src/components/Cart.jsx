@@ -160,6 +160,7 @@ const Cart = ({ onClose }) => {
 
   const handleClose = () => {
     onClose();
+    window.location.reload(); // 整个页面刷新
   };
 
   return (

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addProduct } from '../actions/productAction';
 import ProductForm from '../components/ProductForm';
 
-
 const CreateProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState({
-
     name: '',
     description: '',
     category: '',
@@ -17,14 +17,10 @@ const CreateProduct = () => {
     imageLink: '', // Image link to match backend field
   });
 
-  // Update product state whenever form changes
-
   const handleProductChange = (updatedProduct) => {
     setProduct(updatedProduct);
   };
 
-
-  // Dispatch action to add a new product
   const handleSubmit = () => {
     console.log("Submitting product:", product);
     dispatch(addProduct(product));
@@ -32,13 +28,13 @@ const CreateProduct = () => {
   };
 
   return (
-    <ProductForm
-      initVals={product}
-      onChange={handleProductChange}
-      onSubmit={handleSubmit}
-      btnLabel="Add Product"
-      title="Create Product"
-    />
+      <ProductForm
+          initVals={product}
+          onChange={handleProductChange}
+          onSubmit={handleSubmit}
+          btnLabel="Add Product"
+          title="Create Product"
+      />
   );
 };
 
