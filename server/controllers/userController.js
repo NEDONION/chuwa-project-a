@@ -74,6 +74,16 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const checkAuth = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 export const getAllUsers = async (req, res) => {
   try {
     // Retrieve users with email and role

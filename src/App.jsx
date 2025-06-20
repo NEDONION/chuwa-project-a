@@ -11,10 +11,17 @@ import EditProduct from "./pages/EditProduct.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProductList from "./pages/ProductList.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { checkAuth } from "./actions/authAction.jsx";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState(""); // State to manage search input
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   return (
     <>

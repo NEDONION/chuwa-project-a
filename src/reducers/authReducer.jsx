@@ -11,7 +11,7 @@ const authReducer = (state = initialState, action) => {
         case actionType.TOGGLE_SIGN_IN:
             return {
                 ...state,
-                signedIn: !state.signedIn, 
+                signedIn: typeof action.payload === 'boolean' ? action.payload : !state.signedIn, 
             };
         case actionType.SET_ROLE:
             return {

@@ -59,7 +59,7 @@ const Header = ({ onSearch }) => {
   };
 
   const handleSignOut = () => {
-    dispatch(isSignedIn());
+    dispatch({ type: 'TOGGLE_SIGN_IN', payload: false });
     dispatch(setRole(null));
     dispatch(setName(''));
     localStorage.removeItem("authToken");
