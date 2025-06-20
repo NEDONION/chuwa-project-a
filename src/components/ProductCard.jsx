@@ -108,12 +108,10 @@ const ProductCard = ({ product, onQuantityChange }) => {
             variant="contained"
             color="primary"
             size="small"
-            style={{ width: '48%', fontSize: '12px', height: '30px' }}
+            style={{ width: '100%', fontSize: '12px', height: '30px' }}
             onClick={(e) => {
               e.stopPropagation();
-              setShowSelector(true);
-              setQuantity(1);
-              onQuantityChange(product._id, 1);
+              navigate(`/detail/${product._id}`);
             }}
           >
             Add

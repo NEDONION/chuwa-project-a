@@ -80,7 +80,7 @@ const Header = ({ onSearch }) => {
       <header className="header">
         <div className="header-left">
           <h1 onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
-            Home
+            Management <span>Chuwa</span>
           </h1>
         </div>
 

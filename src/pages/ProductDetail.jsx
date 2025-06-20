@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, Grid, Chip, IconButton } from '@mui/material';
+import { Box, Typography, Button, Grid, Chip, IconButton, TextField } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
+import { useSelector } from 'react-redux';
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -11,11 +11,8 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(0);
   const [showSelector, setShowSelector] = useState(false);
+  const role = useSelector((state) => state.auth.role);
 
-  // Access user role from Redux store
-  const role = useSelector((state) => state.auth.role); // Get the role from Redux store
-
-  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -29,7 +26,6 @@ const ProductDetail = () => {
         console.error("Error fetching product:", error.message);
       }
     };
-
     fetchProduct();
   }, [id]);
 
@@ -39,12 +35,21 @@ const ProductDetail = () => {
       return;
     }
 
-    const userId = localStorage.getItem("userId") || "000000000000000000000000";
+    if (quantity > product.inStockQuantity) {
+      alert(`Cannot add ${quantity} items. Only ${product.inStockQuantity} items available in stock.`);
+      return;
+    }
 
+    const userId = localStorage.getItem("userId") || "000000000000000000000000";
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingProduct = cart.find((item) => item.productId === product._id);
 
     if (existingProduct) {
+      const totalQuantity = existingProduct.quantity + quantity;
+      if (totalQuantity > product.inStockQuantity) {
+        alert(`Cannot add ${quantity} more items. You already have ${existingProduct.quantity} in cart, and only ${product.inStockQuantity} items available in stock.`);
+        return;
+      }
       existingProduct.quantity += quantity;
     } else {
       cart.push({
@@ -57,7 +62,6 @@ const ProductDetail = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-
     window.dispatchEvent(new Event("cartUpdate"));
 
     try {
@@ -66,11 +70,9 @@ const ProductDetail = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, items: cart }),
       });
-
       if (!response.ok) {
         throw new Error("Failed to add to cart");
       }
-
       alert(`Successfully added ${quantity} item(s) to the cart.`);
     } catch (error) {
       console.error("Error adding to cart:", error.message);
@@ -79,40 +81,16 @@ const ProductDetail = () => {
   };
 
   if (!product) {
-    return (
-      <Typography
-        variant="h6"
-        style={{ textAlign: "center", marginTop: "20px" }}
-      >
-        Loading product details...
-      </Typography>
-    );
+    return <Typography variant="h6" style={{ textAlign: "center", marginTop: "20px" }}>Loading product details...</Typography>;
   }
 
   return (
     <div>
       <h2 style={{ textAlign: "left", marginTop: 0, fontSize: "2rem" }}>Product Detail</h2>
-      <Box
-        sx={{
-          maxWidth: "1000px",
-          margin: "auto",
-          padding: 6,
-          backgroundColor: "white",
-          borderRadius: 2,
-          boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
-        }}
-      >
+      <Box sx={{ maxWidth: "1000px", margin: "auto", padding: 6, backgroundColor: "white", borderRadius: 2, boxShadow: "0px 2px 6px rgba(0,0,0,0.1)" }}>
         <Grid container spacing={6}>
           <Grid item xs={12} md={6}>
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              style={{
-                maxWidth: "100%",
-                height: "400px",
-                objectFit: "contain",
-              }}
-            />
+            <img src={product.imageUrl} alt={product.name} style={{ maxWidth: "100%", height: "400px", objectFit: "contain" }} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="overline" display="block" gutterBottom style={{ fontSize: "1.2rem" }}>
@@ -124,7 +102,7 @@ const ProductDetail = () => {
             <Typography variant="h3" gutterBottom style={{ fontSize: "2.5rem", fontWeight: "bold" }}>
               ${product.price}{" "}
               <Chip
-                label={product.inStockQuantity > 0 ? "In Stock" : "Out of Stock"}
+                label={`Stock: ${product.inStockQuantity} items`}
                 color={product.inStockQuantity > 0 ? "success" : "error"}
                 style={{ fontSize: "1rem", padding: "0 10px" }}
               />
@@ -133,68 +111,52 @@ const ProductDetail = () => {
               {product.description}
             </Typography>
             <Box sx={{ marginTop: 4 }}>
-              {!showSelector ? (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  sx={{ fontSize: "1.2rem", padding: "10px 20px" }}
-                  onClick={() => {
-                    setShowSelector(true);
-                    setQuantity(1);
-                  }}
-                >
-                  Add To Cart
-                </Button>
-              ) : (
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IconButton
-                    size="large"
-                    onClick={() => {
-                      const newQuantity = Math.max(quantity - 1, 0);
-                      setQuantity(newQuantity);
-                      if (newQuantity === 0) {
-                        setShowSelector(false);
-                      }
-                    }}
-                  >
-                    <RemoveIcon fontSize="large" />
-                  </IconButton>
-                  <Typography
-                    variant="h4"
-                    style={{ margin: "0 20px", fontWeight: "bold", fontSize: "1.8rem" }}
-                  >
-                    {quantity}
-                  </Typography>
-                  <IconButton
-                    size="large"
-                    onClick={() => {
-                      setQuantity(quantity + 1);
-                    }}
-                  >
-                    <AddIcon fontSize="large" />
-                  </IconButton>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    sx={{ marginLeft: 2, fontSize: "1.2rem" }}
-                    onClick={handleAddToCart}
-                  >
-                    Add
+              {product.inStockQuantity > 0 ? (
+                !showSelector ? (
+                  <Button variant="contained" color="primary" size="large" sx={{ fontSize: "1.2rem", padding: "10px 20px" }} onClick={() => { setShowSelector(true); setQuantity(1); }}>
+                    Add To Cart
                   </Button>
-                </Box>
+                ) : (
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton size="large" onClick={() => { const newQuantity = Math.max(quantity - 1, 0); setQuantity(newQuantity); if (newQuantity === 0) { setShowSelector(false); } }}>
+                      <RemoveIcon fontSize="large" />
+                    </IconButton>
+                    <TextField
+                      type="number"
+                      value={quantity}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value) || 0;
+                        if (newQuantity > product.inStockQuantity) {
+                          alert(`Cannot set quantity to ${newQuantity}. Only ${product.inStockQuantity} items available in stock.`);
+                          return;
+                        }
+                        if (newQuantity < 0) {
+                          setQuantity(0);
+                        } else {
+                          setQuantity(newQuantity);
+                        }
+                      }}
+                      onBlur={() => { if (quantity === 0) { setShowSelector(false); } }}
+                      inputProps={{ min: 0, max: product.inStockQuantity, style: { textAlign: 'center', fontSize: '1.8rem', fontWeight: 'bold', width: '80px' } }}
+                      variant="outlined"
+                      size="small"
+                      sx={{ margin: '0 20px' }}
+                    />
+                    <IconButton size="large" onClick={() => { if (quantity + 1 > product.inStockQuantity) { alert(`Cannot add more items. Only ${product.inStockQuantity} items available in stock.`); return; } setQuantity(quantity + 1); }}>
+                      <AddIcon fontSize="large" />
+                    </IconButton>
+                    <Button variant="contained" color="primary" size="large" sx={{ marginLeft: 2, fontSize: "1.2rem" }} onClick={handleAddToCart}>
+                      Add
+                    </Button>
+                  </Box>
+                )
+              ) : (
+                <Button variant="contained" disabled size="large" sx={{ fontSize: "1.2rem", padding: "10px 20px" }}>
+                  Out of Stock
+                </Button>
               )}
-              {/* Show 'Edit' button only if the user is an admin */}
               {role === 'Admin' && (
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{ marginLeft: 2, fontSize: "1.2rem" }}
-                  onClick={() =>
-                    navigate(`/edit-product/${product._id}`, { state: { product } })
-                  }
-                >
+                <Button variant="outlined" size="large" sx={{ marginLeft: 2, fontSize: "1.2rem" }} onClick={() => navigate(`/edit-product/${product._id}`, { state: { product } })}>
                   Edit
                 </Button>
               )}
