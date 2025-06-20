@@ -5,16 +5,19 @@ import Picture2 from "../assets/picture2.png"; // Cart icon
 import Picture3 from "../assets/picture3.png"; // Search icon
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import { useSelector, useDispatch } from "react-redux";
-import { isSignedIn, setRole } from "../actions/authAction";
+import { isSignedIn, setRole, setName } from "../actions/authAction";
 import Cart from "./Cart";
+import { Menu, MenuItem } from '@mui/material';
 
 const Header = ({ onSearch }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Hook for navigation
   const signedIn = useSelector((state) => state.auth.signedIn);
+  const userName = useSelector((state) => state.auth.name);
   const [cartOpen, setCartOpen] = useState(false); // State for cart modal visibility
   const [subtotal, setSubtotal] = useState(0); // State for cart subtotal
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Function to calculate the subtotal from cart
   const calculateSubtotal = () => {
@@ -43,24 +46,27 @@ const Header = ({ onSearch }) => {
     };
   }, []);
 
-  // Handle "Sign In" click to navigate to the sign-in page
-  const handleSignInClick = () => {
+  const handleUserMenuClick = (event) => {
     if (!signedIn) {
-      // when not signed in, navigate to the Sign In page
       navigate("/signin");
     } else {
-      // when signed in, sign out the user
-      dispatch(isSignedIn()); // Update the signed-in status in the Redux store
-      dispatch(setRole(null)); // Clear the user's role in Redux store
-  
-      // Clear user data from localStorage
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("userId"); // Optionally clear user ID from localStorage
-      localStorage.removeItem("cart"); // Optionally clear cart data
-  
-      // Redirect to home page or any other page if necessary
-      navigate("/"); // Optionally navigate to the homepage or another page
+      setAnchorEl(event.currentTarget);
     }
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = () => {
+    dispatch(isSignedIn());
+    dispatch(setRole(null));
+    dispatch(setName(''));
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("cart");
+    handleMenuClose();
+    navigate("/");
   };
 
   // Handle "Cart" click to open or close the cart
@@ -98,10 +104,20 @@ const Header = ({ onSearch }) => {
         </div>
 
         <div className="header-right">
-          <div className="user" onClick={handleSignInClick}>
+          <div className="user" onClick={handleUserMenuClick}>
             <img src={Picture1} alt="User Icon" className="icon" />
-            {signedIn ? <span>Sign Out</span> : <span>Sign In</span>}
+            {signedIn ? <span>{userName}</span> : <span>Sign In</span>}
           </div>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItem disabled>Hi, {userName}</MenuItem>
+            <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+          </Menu>
           <div className="cart" onClick={handleCartClick}>
             <img src={Picture2} alt="Cart Icon" className="icon" />
             <span>${subtotal.toFixed(2)}</span> {/* Display subtotal */}

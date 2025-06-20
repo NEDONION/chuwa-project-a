@@ -1,7 +1,7 @@
 import AuthForm from "../components/AuthForm";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { isSignedIn, setRole } from "../actions/authAction";
+import { isSignedIn, setRole, setName } from "../actions/authAction";
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -37,6 +37,9 @@ const SignIn = () => {
         
                 // Store user role in Redux
                 dispatch(setRole(result.role)); // Update Redux with role
+        
+                // Store user name in Redux
+                dispatch(setName(result.name));
         
                 dispatch(isSignedIn()); // Update signedIn state
         

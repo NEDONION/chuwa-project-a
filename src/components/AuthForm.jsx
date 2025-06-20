@@ -9,6 +9,7 @@ const AuthForm = ({buttonText, handleSubmit}) => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: ''
     })
@@ -74,6 +75,20 @@ const AuthForm = ({buttonText, handleSubmit}) => {
                     
                 </>
                 )}
+            {buttonText === 'Sign Up' && (
+                <div className='mb-3'>
+                    <label>Name</label>
+                    <input
+                        type="text"
+                        name='name'
+                        className={`form-control ${errors.name ? 'error' : ''}`}
+                        placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+                    <div className="error-text">{errors.name || ''}</div>
+                </div>
+            )}
             <div className='mb-3'>
                 <label>Email</label>
                 <input 

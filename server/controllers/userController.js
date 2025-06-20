@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     // Check if the user already exists
@@ -21,6 +21,7 @@ export const registerUser = async (req, res) => {
 
     // Create the new user with role
     const user = await User.create({
+      name,
       email,
       password: hashedPassword,
       role,  // Assign the role to the user
@@ -29,6 +30,7 @@ export const registerUser = async (req, res) => {
     // Respond with user info excluding the password
     res.status(201).json({
       _id: user.id,
+      name: user.name,
       email: user.email,
       role: user.role, // Include the role in the response
     });
@@ -62,6 +64,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       token,
       userId: user._id, // Add userId to the response
+      name: user.name,
       role: user.role,  // Include the role in the response
       message: 'Login successful',
     });

@@ -1,42 +1,65 @@
 import AuthForm from "../components/AuthForm";
-import { baseUrl } from "../utils/service";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { isSignedIn, setRole, setName } from "../actions/authAction";
 
 const SignUp = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const buttonText = "Sign Up";
     
     const handleSubmit = async (e, formData) => {
         e.preventDefault();
-        console.log('successfully submit sign up form')
-
-        const {email, password} = formData;
+        const { name, email, password } = formData;
 
         try {
-              const response = await fetch("http://localhost:5001/api/users/register", {
-                  method: "POST",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({email, password}),
-              });
+            // Step 1: Register the user
+            const registerResponse = await fetch("http://localhost:5001/api/users/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            });
 
-              if (response.ok) {
-                  const result = await response.json();
-                  alert("User registered successfully!");
-                  console.log("User registered:", result);
-                  // Handle successful submission, navigate to another page
-              } else {
-                  const error = await response.json();
-                  alert(error.message || "Registration failed");
-              }
-          } catch (error) {
-              console.error("Error during registration:", error);
-              alert("An error occurred. Please try again.");
-          }
+            if (registerResponse.ok) {
+                // Step 2: If registration is successful, automatically log the user in
+                const loginResponse = await fetch("http://localhost:5001/api/users/signin", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (loginResponse.ok) {
+                    const result = await loginResponse.json();
+                    
+                    // Store token and user info
+                    localStorage.setItem('authToken', result.token);
+                    localStorage.setItem('userId', result.userId);
+                    
+                    // Dispatch actions to update Redux state
+                    dispatch(setRole(result.role));
+                    dispatch(setName(result.name));
+                    dispatch(isSignedIn());
+                    
+                    // Navigate to homepage
+                    navigate('/');
+                } else {
+                    const error = await loginResponse.json();
+                    alert(error.message || "Login failed after registration. Please try logging in manually.");
+                }
+
+            } else {
+                const error = await registerResponse.json();
+                alert(error.message || "Registration failed");
+            }
+        } catch (error) {
+            console.error("Error during registration/login:", error);
+            alert("An error occurred. Please try again.");
+        }
     }
 
     return (
         <div className="auth-form-container">
-            <AuthForm  buttonText = {buttonText} handleSubmit={handleSubmit}/>
+            <AuthForm buttonText={buttonText} handleSubmit={handleSubmit} />
         </div>
     );
 };

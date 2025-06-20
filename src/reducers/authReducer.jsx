@@ -3,6 +3,7 @@ import { actionType } from "../helper";
 const initialState = {
     signedIn: false, 
     role: null, // Default role is null
+    name: '',
 };
 
 const authReducer = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 role: action.payload, // Set the user role from the payload
+            };
+        case actionType.SET_NAME:
+            return {
+                ...state,
+                name: action.payload,
             };
         default:
             return state;

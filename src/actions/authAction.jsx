@@ -14,3 +14,10 @@ export const setRole = (role) => {
     payload: role, // The role of the user, e.g., 'admin' or 'regular'
   };
 };
+
+export const setName = (name) => {
+  return {
+    type: actionType.SET_NAME,
+    payload: name,
+  };
+};
