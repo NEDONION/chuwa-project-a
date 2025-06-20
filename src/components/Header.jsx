@@ -79,8 +79,8 @@ const Header = ({ onSearch }) => {
     <>
       <header className="header">
         <div className="header-left">
-          <h1>
-            Management <span>Chuwa</span>
+          <h1 onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+            Home
           </h1>
         </div>
 

@@ -1,16 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, TextField, Button, Select, MenuItem, Typography, Grid } from "@mui/material";
 
 const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
-  const [product, setProduct] = useState({
-    name: initVals.name || "",
-    description: initVals.description || "",
-    category: initVals.category || "",
-    price: initVals.price || 0,
-    quantity: initVals.quantity || 0,
-    imageLink: initVals.imageLink || "",
-  });
+  // Get saved form data from localStorage or use initial values
+  const getSavedFormData = () => {
+    const savedData = localStorage.getItem('productFormData');
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      return {
+        name: parsed.name || initVals.name || "",
+        description: parsed.description || initVals.description || "",
+        category: parsed.category || initVals.category || "",
+        price: parsed.price || initVals.price || 0,
+        quantity: parsed.quantity || initVals.quantity || 0,
+        imageLink: parsed.imageLink || initVals.imageLink || "",
+      };
+    }
+    return {
+      name: initVals.name || "",
+      description: initVals.description || "",
+      category: initVals.category || "",
+      price: initVals.price || 0,
+      quantity: initVals.quantity || 0,
+      imageLink: initVals.imageLink || "",
+    };
+  };
+
+  const [product, setProduct] = useState(getSavedFormData);
   const [previewImage, setPreviewImage] = useState(null);
+
+  // Save form data to localStorage whenever product state changes
+  useEffect(() => {
+    localStorage.setItem('productFormData', JSON.stringify(product));
+  }, [product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +52,12 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
       setPreviewImage(null);
       alert("Please provide a valid image URL");
     }
+  };
+
+  // Clear saved form data when form is successfully submitted
+  const handleSubmit = () => {
+    localStorage.removeItem('productFormData'); // Clear saved data
+    onSubmit(); // Call the original onSubmit function
   };
 
   return (
@@ -176,7 +204,7 @@ const ProductForm = ({ initVals, onChange, onSubmit, btnLabel, title }) => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={onSubmit}
+              onClick={handleSubmit}
               disabled={
                 Object.values(product).some((val) => !val) || // Ensure no field is empty
                 !product.imageLink.startsWith("https")

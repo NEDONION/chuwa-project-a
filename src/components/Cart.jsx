@@ -159,8 +159,9 @@ const Cart = ({ onClose }) => {
   };
 
   const handleClose = () => {
+    // 触发 cartUpdate 事件，通知 Header 组件重新计算小计
+    window.dispatchEvent(new Event("cartUpdate"));
     onClose();
-    window.location.reload(); // 整个页面刷新
   };
 
   return (
