@@ -72,14 +72,19 @@ const ProductDetail = () => {
     window.dispatchEvent(new Event("cartUpdate"));
 
     try {
-      const response = await fetch("http://localhost:5001/api/cart", {
+      const itemToUpdate = {
+        productId: product._id,
+        quantity,
+        name: product.name,
+        price: product.price,
+        imgLink: product.imageUrl,
+      };
+
+      await fetch("http://localhost:5001/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, items: cart }),
+        body: JSON.stringify({ userId, item: itemToUpdate }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to add to cart");
-      }
       alert(`Successfully added ${quantity} item(s) to the cart.`);
     } catch (error) {
       console.error("Error adding to cart:", error.message);
